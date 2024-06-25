@@ -2,8 +2,11 @@ from flask import Flask,render_template,request,send_file
 from flask_cors import CORS
 import json
 from PyPDF2 import PdfReader
+
 from medicare import run_crossover,run_claim_adjustments,run_claim_denied,run_claim_paid,medicareEngine
 from wellpoint import wEngine
+from bcbs import BcbsEngine
+
 import zipfile
 from io import BytesIO
 import os
@@ -28,13 +31,21 @@ def index():
         filee.save(pdfPath)
         reader = PdfReader(pdfPath)
 
+        zip_buffer = BytesIO()
         if data=='medicare':
             zip_buffer = medicareEngine(reader)
-        else:
+            zip_buffer.seek(0)
+        elif data=='wellpoint ERA':
             zip_buffer = wEngine(reader)
+            zip_buffer.seek(0)
+        elif data=="bcbs":
+            engine = BcbsEngine()
+            zip_buffer = engine.run(reader,pdfPath)
+            zip_buffer.seek(0)
+            print("The zip buffer is : ")
         
 
-        zip_buffer.seek(0)
+        
     
         os.remove(pdfPath)
         return send_file(zip_buffer,
