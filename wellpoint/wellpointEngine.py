@@ -73,6 +73,13 @@ def wEngine(reader):
                             claim_line.insert(12, split_value(claim_line[11])[0])
                             claim_line.insert(13, split_value(claim_line[11])[1])
                             claim_line.remove(claim_line[11])
+
+
+                        if len(claim_line)==12:         
+                            claim_line.insert(12,None)
+                            claim_line.insert(13,None)
+                        if len(claim_line)==13:
+                            claim_line.insert(13,None)
                         if len(table[claim_itr + 1]) < 3:
                             temp_val = table[claim_itr + 1]
                             claim_line.append(temp_val[0])
