@@ -4,7 +4,7 @@ import json
 from PyPDF2 import PdfReader
 
 from medicare import run_crossover,run_claim_adjustments,run_claim_denied,run_claim_paid,medicareEngine
-from wellpoint import wEngine
+from wellpoint import wEngine,WellPointEOBEngine
 from bcbs import BcbsEngine
 
 import zipfile
@@ -26,8 +26,7 @@ def index():
         data = request.form.get('organization')
 
         print(data)
-        #return render_template('index.html')
-        #print("The file name is : ",filee.filename)
+        
         pdfPath = f"./pdfs/{filee.filename}"
         filee.save(pdfPath)
         reader = PdfReader(pdfPath)
@@ -38,6 +37,10 @@ def index():
             zip_buffer.seek(0)
         elif data=='wellpoint ERA':
             zip_buffer = wEngine(reader)
+            zip_buffer.seek(0)
+        elif data=='wellpoint EOB':
+            zip_buffer = WellPointEOBEngine().run(reader,pdfPath)
+
             zip_buffer.seek(0)
         elif data=="bcbs":
             engine = BcbsEngine()
