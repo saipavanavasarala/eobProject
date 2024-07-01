@@ -108,8 +108,7 @@ def getTotalClaim(claimLine,netDetails):
       Net=netDetails.split()[-1]
       return claimTotalDetails,Net
  
-def run_RemitiveAdvice(reader):
-   page= reader.pages
+def run_RemitiveAdvice(page):
    pagestext=getText(page)
    #partition tabular data
    tab_data=pagestext.split("____________________________________________________________________________________________________________________")
@@ -139,3 +138,8 @@ def run_RemitiveAdvice(reader):
    return final_list
 
 
+pdfPath="C:\\Users\\ankitha\\Downloads\\815817296_04.17.2024_$20321.43-(99 pages  have on testing do not touch).pdf"
+reader=PdfReader(pdfPath)
+pages=reader.pages
+res=run_RemitiveAdvice(pages)
+print(res)

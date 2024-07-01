@@ -3,9 +3,11 @@ from flask_cors import CORS
 import json
 from PyPDF2 import PdfReader
 
-from medicare import run_crossover,run_claim_adjustments,run_claim_denied,run_claim_paid,medicareEngine
+from medicaid import run_crossover,run_claim_adjustments,run_claim_denied,run_claim_paid,medicareEngine
 from wellpoint import wEngine,WellPointEOBEngine
 from bcbs import BcbsEngine
+from medicare import MedicareEngine
+from optum import OptumEngine
 
 import zipfile
 from io import BytesIO
@@ -32,7 +34,7 @@ def index():
         reader = PdfReader(pdfPath)
 
         zip_buffer = BytesIO()
-        if data=='medicare':
+        if data=='medicaid':
             zip_buffer = medicareEngine(reader)
             zip_buffer.seek(0)
         elif data=='wellpoint ERA':
@@ -47,11 +49,21 @@ def index():
             zip_buffer = engine.run(reader,pdfPath)
             zip_buffer.seek(0)
             print("The zip buffer is : ")
+
+        elif data == 'medicare':
+            engine = MedicareEngine()
+            zip_buffer =  engine.run(reader,pdfPath)
+            zip_buffer.seek(0)
+
+        elif data == "optum":
+            engine = OptumEngine()
+            zip_buffer = engine.run(reader,pdfPath)
+            zip_buffer.seek(0)
         
 
         
     
-        os.remove(pdfPath)
+        #os.remove(pdfPath)
         return send_file(zip_buffer,
         mimetype='application/zip',
         as_attachment=True,
@@ -61,7 +73,7 @@ def index():
 
 
 
-        #return render_template("index.html") 
+        
 
 
 if __name__ =="__main__":
