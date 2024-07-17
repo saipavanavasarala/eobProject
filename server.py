@@ -6,7 +6,7 @@ from PyPDF2 import PdfReader
 from medicaid import run_crossover,run_claim_adjustments,run_claim_denied,run_claim_paid,medicareEngine
 from wellpoint import wEngine,WellPointEOBEngine
 from bcbs import BcbsEngine
-from medicare import MedicareEngine
+from medicare import MedicareEngine,MedicareAtenaEngine
 from optum import OptumEngine
 
 import zipfile
@@ -57,6 +57,11 @@ def index():
 
         elif data == "optum":
             engine = OptumEngine()
+            zip_buffer = engine.run(reader,pdfPath)
+            zip_buffer.seek(0)
+
+        elif data == 'medicare atena':
+            engine = MedicareAtenaEngine()
             zip_buffer = engine.run(reader,pdfPath)
             zip_buffer.seek(0)
         
