@@ -1,20 +1,20 @@
 from flask import Flask,render_template,request,send_file
 from flask_cors import CORS
 import json
+import zipfile
+from io import BytesIO
+import os
 from PyPDF2 import PdfReader
-
 from medicaid import run_crossover,run_claim_adjustments,run_claim_denied,run_claim_paid,medicareEngine
 from wellpoint import wEngine,WellPointEOBEngine
 from bcbs import BcbsEngine
 from medicare import MedicareEngine,MedicareAtenaEngine
 from optum import OptumEngine
-
-import zipfile
-from io import BytesIO
-import os
-
+from Vytalize import VytalizeEngine                                                                                                                                                                
+from Tennessee import TennesseEngine
+from palmato import GBA,GBA_AI
 #creating app    
-# adding code for merger from testBranch
+# adding code for merger from testBranch   
 app = Flask(__name__)
 
 @app.route("/",methods=["POST","GET"])
@@ -64,7 +64,25 @@ def index():
             engine = MedicareAtenaEngine()
             zip_buffer = engine.run(reader,pdfPath)
             zip_buffer.seek(0)
+
+        elif data == 'vytalize':
+            engine =  VytalizeEngine()
+            zip_buffer = engine.run(reader,pdfPath)
+            zip_buffer.seek(0)
+        elif data == 'tennesse':
+            engine = TennesseEngine()
+            zip_buffer = engine.run(reader,pdfPath)
+            zip_buffer.seek(0)
         
+        elif data == "GBA_AI":
+            engine = GBA_AI()
+            zip_buffer = engine.run(pdfPath,reader)
+            zip_buffer.seek(0)
+
+        elif data == "GBA":
+            engine =  GBA() 
+            zip_buffer =  engine.run(pdfPath,reader)
+            zip_buffer.seek(0)
 
         
     
