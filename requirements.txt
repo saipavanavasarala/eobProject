@@ -1,0 +1,13 @@
+PyPDF2
+PyPDF4
+datetime
+decimal
+io
+json
+medicaid
+operator
+os
+pandas
+pdfplumber
+re
+zipfile
